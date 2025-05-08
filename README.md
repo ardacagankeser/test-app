@@ -1,3 +1,7 @@
-# test-app
+# Test App
 
-A new Flutter project.
+## to-do
+UI design updates
+UX design updates
+Supabase backend integration, authentication etc.
+Docker
