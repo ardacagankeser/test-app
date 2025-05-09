@@ -12,11 +12,7 @@ import 'package:test_app_rev/screens/auth_screen.dart';
 void main() {
   testWidgets('Counter increments smoke test', (WidgetTester tester) async {
     // Build our app and trigger a frame.
-<<<<<<< HEAD
-    await tester.pumpWidget(const MedicalTestApp());
-=======
     await tester.pumpWidget(const AuthScreen());
->>>>>>> ui-design
 
     // Verify that our counter starts at 0.
     expect(find.text('0'), findsOneWidget);

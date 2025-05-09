@@ -37,38 +37,31 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-
-          children: [
-            const Text(
-              'Testler',
-              style: TextStyle(
-                color: Color.fromRGBO(80,100,130,1),
-                fontWeight: FontWeight.bold,
-                fontSize: 30,
-              ),
-              textAlign: TextAlign.center,
-            ),
-
-            const SizedBox(width: 12,),
-
-            IconButton(
-              icon: Icon(
-                themeNotifier.brightness == Brightness.dark 
-                  ? Icons.nightlight_round_sharp 
-                  : Icons.sunny,
-                color: themeNotifier.brightness == Brightness.dark 
-                  ? Colors.white 
-                  : Colors.yellow[800],
-              ),
-              onPressed: () {
-                themeNotifier.toggleBrightness();
-              },
-            ),
-          ],
+        title: const Text(
+          'Testler',
+            style: TextStyle(
+            color: Color.fromRGBO(80,100,130,1),
+            fontWeight: FontWeight.bold,
+            fontSize: 30,
+          ),
         ),
-        centerTitle: true
+        centerTitle: true,
+
+        actions: [
+          IconButton(
+            icon: Icon(
+              themeNotifier.brightness == Brightness.dark 
+                ? Icons.nightlight_round_sharp 
+                : Icons.sunny,
+              color: themeNotifier.brightness == Brightness.dark 
+                ? Colors.white 
+                : Colors.yellow[800],
+            ),
+            onPressed: () {
+              themeNotifier.toggleBrightness();
+            },
+          ),
+        ],
       ),
 
       body: Padding(
@@ -143,25 +136,6 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                   },
                 ),
             ),
-
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-
-              children: [
-                ElevatedButton.icon(
-                  onPressed: () {Navigator.of(context).pop();},
-                  icon: const Icon(
-                    Icons.u_turn_left_rounded,
-                    color: Colors.white,
-                  ),
-                  label: const Text('Giriş ekranına dön', style: TextStyle(fontWeight: FontWeight.bold),),
-                  style: ElevatedButton.styleFrom(
-                    foregroundColor: Colors.white,
-                    backgroundColor: Color.fromRGBO(80,100,130,1),
-                  ),
-                )
-              ],
-            )
           ],
         ),
       ),
