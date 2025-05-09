@@ -6,6 +6,7 @@ class TestCard extends StatelessWidget {
   final bool isAdmin;
   final VoidCallback onSolve;
   final VoidCallback? onDelete;
+  final VoidCallback? onUpdate;
 
   const TestCard({
     super.key,
@@ -13,6 +14,7 @@ class TestCard extends StatelessWidget {
     required this.isAdmin,
     required this.onSolve,
     this.onDelete,
+    this.onUpdate,
   });
 
   @override
@@ -70,26 +72,39 @@ class TestCard extends StatelessWidget {
                     ),
                   ],
                 ),
+
                 const SizedBox(height: 16),
+
                 Row(
-                  mainAxisAlignment:
-                      isAdmin ? MainAxisAlignment.spaceBetween : MainAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  
                   children: [
                     ElevatedButton.icon(
                       onPressed: onSolve,
                       icon: const Icon(Icons.play_arrow),
-                      label: const Text('Testi Çöz', style: TextStyle(color: Color.fromRGBO(80,100,130,1), fontWeight: FontWeight.bold),),
+                      label: const Text('Çöz', style: TextStyle(color: Color.fromRGBO(80,100,130,1), fontWeight: FontWeight.bold),),
                     ),
+
+                    if (isAdmin && onUpdate != null)
+                      ElevatedButton.icon(
+                        onPressed: onUpdate,
+                        icon: const Icon(Icons.edit, color: Colors.white,),
+                        label: const Text('Düzenle', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.blue[800],
+                        ),
+                      ),
 
                     if (isAdmin && onDelete != null)
                       ElevatedButton.icon(
                         onPressed: onDelete,
                         icon: const Icon(Icons.delete, color: Colors.white,),
-                        label: const Text('Testi Sil', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),),
+                        label: const Text('Sil', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.red[800],
                         ),
                       ),
+
                   ],
                 ),
               ],

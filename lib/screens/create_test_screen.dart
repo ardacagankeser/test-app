@@ -4,17 +4,33 @@ import "package:test_app_rev/models/medical_test.dart";
 
 class CreateTestScreen extends StatefulWidget {
   final Function(MedicalTest) onTestCreated;
+  final MedicalTest? existingTest;
 
-  const CreateTestScreen({super.key, required this.onTestCreated});
+  const CreateTestScreen({super.key, required this.onTestCreated, this.existingTest});
 
   @override
   State<CreateTestScreen> createState() => _CreateTestScreenState();
 }
 
 class _CreateTestScreenState extends State<CreateTestScreen> {
-  final TextEditingController _titleController = TextEditingController();
-  final TextEditingController _descriptionController = TextEditingController();
-  final List<TestQuestion> _questions = [];
+  late TextEditingController _titleController;
+  late TextEditingController _descriptionController;
+  late List<TestQuestion> _questions;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _titleController = TextEditingController(
+      text: widget.existingTest?.title ?? "",
+    );
+
+    _descriptionController = TextEditingController(
+      text: widget.existingTest?.description ?? "",
+    );
+
+    _questions = widget.existingTest?.questions.map((q) => q.copy()).toList() ?? [];
+  }
 
   void _addNewQuestion(TestQuestion question) {
     setState(() {
@@ -23,7 +39,7 @@ class _CreateTestScreenState extends State<CreateTestScreen> {
   }
 
   void _editQuestion(int index) {
-    _showQuestionDialog(editIndex: index);
+    _showQuestionDialog(editQuestionIndex: index);
   }
 
   void _deleteQuestion(int index) {
@@ -47,13 +63,13 @@ class _CreateTestScreenState extends State<CreateTestScreen> {
     }
   }
 
-  void _showQuestionDialog({int? editIndex}) {
+  void _showQuestionDialog({int? editQuestionIndex}) {
     final TextEditingController questionController = TextEditingController();
     List<TextEditingController> optionControllers = [];
 
-    if (editIndex != null) {
-      questionController.text = _questions[editIndex].question;
-      for (String opt in _questions[editIndex].options) {
+    if (editQuestionIndex != null) {
+      questionController.text = _questions[editQuestionIndex].question;
+      for (String opt in _questions[editQuestionIndex].options) {
         optionControllers.add(TextEditingController(text: opt));
       }
     }
@@ -69,7 +85,7 @@ class _CreateTestScreenState extends State<CreateTestScreen> {
         return StatefulBuilder(
           builder: (ctx, setDialogState) { // Renamed setState to setDialogState for clarity
             return AlertDialog(
-              title: Text(editIndex == null ? 'Yeni Soru Ekle' : 'Soruyu Düzenle'),
+              title: Text(editQuestionIndex == null ? 'Yeni Soru Ekle' : 'Soruyu Düzenle'),
               content: SingleChildScrollView(
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
@@ -151,11 +167,11 @@ class _CreateTestScreenState extends State<CreateTestScreen> {
                     if (questionController.text.isNotEmpty && opts.length >= 2) {
                       final newQ = TestQuestion(question: questionController.text, options: opts);
                       
-                      if (editIndex == null) {
+                      if (editQuestionIndex == null) {
                         _addNewQuestion(newQ);
                       } else {
                         setState(() { // Ana widget'ın setState'ini kullanıyoruz
-                          _questions[editIndex] = newQ;
+                          _questions[editQuestionIndex] = newQ;
                         });
                       }
                       Navigator.of(ctx).pop();
@@ -165,7 +181,7 @@ class _CreateTestScreenState extends State<CreateTestScreen> {
                       );
                     }
                   },
-                  child: Text(editIndex == null ? 'Ekle' : 'Güncelle'),
+                  child: Text(editQuestionIndex == null ? 'Ekle' : 'Güncelle'),
                 ),
               ],
             );
@@ -178,7 +194,13 @@ class _CreateTestScreenState extends State<CreateTestScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Yeni Test Oluştur'), centerTitle: true),
+      appBar: AppBar(
+        title: Text(
+          widget.existingTest == null ? "Test oluştur" : "Testi düzenle",
+        ), 
+        centerTitle: true
+      ),
+
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -223,52 +245,62 @@ class _CreateTestScreenState extends State<CreateTestScreen> {
             const SizedBox(height: 8),
 
             Expanded(
-              child: _questions.isEmpty
-                  ? const Center(child: Text('Henüz soru eklenmedi. Soru eklemek için yukarıdaki butona tıklayın.'))
-                  : ListView.builder(
-                      itemCount: _questions.length,
-                      itemBuilder: (_, i) {
-                        final q = _questions[i];
+              child: _questions.isEmpty ? const Center(child: Text('Henüz soru eklenmedi. Soru eklemek için yukarıdaki butona tıklayın.')) : 
+                ListView.builder(
+                  itemCount: _questions.length,
+                  itemBuilder: (_, i) {
+                    final q = _questions[i];
 
-                        return Card(
-                          margin: const EdgeInsets.only(bottom: 12),
+                    return Card(
+                      margin: const EdgeInsets.only(bottom: 12),
 
-                          child: ListTile(
-                            title: Text(
-                              'Soru ${i + 1}: ${q.question}',
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                color: Color.fromRGBO(80,100,130,1),
-                              ),
+                      child: ListTile(
+                        title: Text(
+                          'Soru ${i + 1}: ${q.question}',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Color.fromRGBO(80,100,130,1),
+                          ),
+                        ),
+
+                        subtitle: Text('${q.options.length} seçenek'),
+
+                        trailing: Row(
+                          mainAxisSize: MainAxisSize.min, 
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          
+                          children: [
+                            IconButton(
+                              icon: const Icon(
+                                Icons.edit,
+                                color: Colors.blue
+                              ), onPressed: () => _editQuestion(i,)
                             ),
 
-                            subtitle: Text('${q.options.length} seçenek'),
-
-                            trailing: Row(mainAxisSize: MainAxisSize.min, children: [
-                              IconButton(
-                                icon: const Icon(
-                                  Icons.edit,
-                                  color: Colors.blue
-                                ), onPressed: () => _editQuestion(i,)
-                              ),
-
-                              IconButton(
-                                icon: const Icon(
-                                  Icons.delete,
-                                  color: Colors.red
-                                ), onPressed: () => _deleteQuestion(i)
-                              ),
-                            ]),
-                          ),
-                        );
-                      },
-                    ),
+                            IconButton(
+                              icon: const Icon(
+                                Icons.delete,
+                                color: Colors.red
+                              ), onPressed: () => _deleteQuestion(i)
+                            ),
+                          ]
+                        ),
+                      ),
+                    );
+                  },
+                ),
             ),
+
             SizedBox(
               width: double.infinity,
               height: 50,
-              child: ElevatedButton(onPressed: _saveTest, child: const Text('Testi Kaydet', style: TextStyle(fontSize: 16))),
-            ),
+              child: ElevatedButton(
+                onPressed: _saveTest, 
+                child: Text(
+                  widget.existingTest == null ? "Testi kaydet" : "Testi güncelle",
+                ),
+              ),
+            )
           ],
         ),
       ),

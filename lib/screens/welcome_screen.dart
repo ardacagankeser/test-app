@@ -31,6 +31,12 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
     });
   }
 
+  void _updateTest(MedicalTest t, index) {
+    setState(() {
+      tests[index] = t;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final themeNotifier = Provider.of<ThemeNotifier>(context);
@@ -132,6 +138,21 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                         );
                       },
                       onDelete: widget.isAdmin ? () => _deleteTest(test) : null,
+
+                      onUpdate: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => CreateTestScreen(
+                              existingTest: test,
+                              onTestCreated: (updatedTest) {
+                                _updateTest(updatedTest, index); // index needs to be in scope
+                              },
+                            ),
+                          ),
+                        );
+                      },
+                      
                     );
                   },
                 ),
