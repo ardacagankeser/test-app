@@ -81,7 +81,6 @@ class _CreateTestScreenState extends State<CreateTestScreen> {
                         labelText: 'Soru Metni',
                         border: OutlineInputBorder(),
                         filled: true,
-                        fillColor: Color(0xFFE3F2FD),
                       ),
                       maxLines: 2,
                     ),
