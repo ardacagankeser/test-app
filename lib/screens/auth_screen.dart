@@ -71,7 +71,7 @@ class _AuthScreenState extends State<AuthScreen> {
 
             ElevatedButton.icon(
               onPressed: () => Navigator.of(context).push(
-                MaterialPageRoute(builder: (context) => WelcomeScreen(isAdmin: _isAdmin)),
+                MaterialPageRoute(builder: (context) => WelcomeScreen(isAdmin: _isAdmin,)),
               ),
               icon: const Icon(
                 Icons.door_sliding_rounded,

@@ -4,9 +4,12 @@ import '../data/sample_tests.dart';
 import 'create_test_screen.dart';
 import 'take_test_screen.dart';
 import '../widgets/test_card.dart';
+import 'package:provider/provider.dart';
+import '../theme_notifier.dart';
 
 class WelcomeScreen extends StatefulWidget {
   final bool isAdmin;
+
   const WelcomeScreen({super.key, required this.isAdmin});
 
   @override
@@ -30,18 +33,41 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final themeNotifier = Provider.of<ThemeNotifier>(context);
 
     return Scaffold(
-
       appBar: AppBar(
-        title: const Text(
-          'Testler',
-          style: TextStyle(
-            color: Color.fromRGBO(80,100,130,1),
-            fontWeight: FontWeight.bold,
-            fontSize: 30,
-          ),
-        ), 
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+
+          children: [
+            const Text(
+              'Testler',
+              style: TextStyle(
+                color: Color.fromRGBO(80,100,130,1),
+                fontWeight: FontWeight.bold,
+                fontSize: 30,
+              ),
+              textAlign: TextAlign.center,
+            ),
+
+            const SizedBox(width: 12,),
+
+            IconButton(
+              icon: Icon(
+                themeNotifier.brightness == Brightness.dark 
+                  ? Icons.nightlight_round_sharp 
+                  : Icons.sunny,
+                color: themeNotifier.brightness == Brightness.dark 
+                  ? Colors.white 
+                  : Colors.yellow[800],
+              ),
+              onPressed: () {
+                themeNotifier.toggleBrightness();
+              },
+            ),
+          ],
+        ),
         centerTitle: true
       ),
 
