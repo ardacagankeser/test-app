@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:test_app_rev/widgets/gradient_button.dart';
+import 'package:test_app_rev/widgets/login_field.dart';
 import 'welcome_screen.dart';
 
 class AuthScreen extends StatefulWidget {
@@ -9,8 +11,6 @@ class AuthScreen extends StatefulWidget {
 }
 
 class _AuthScreenState extends State<AuthScreen> {
-  final TextEditingController _usernameController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
   bool _isAdmin = false;
 
   @override
@@ -20,92 +20,63 @@ class _AuthScreenState extends State<AuthScreen> {
     final textTheme = theme.textTheme;
 
     return Scaffold(
-      appBar: AppBar( 
-        title: Text(
-          'Test Uygulaması',
-          style: textTheme.headlineSmall?.copyWith(
-            color: colorScheme.onSurface,
-            fontWeight: FontWeight.bold,
-          ),
-        ), 
-        centerTitle: true
-      ),
+      body: SingleChildScrollView( 
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+          
+            children: [
+              Image.asset("assets/images/signin_balls.png"),
 
-      body: Padding( 
-        padding: const EdgeInsets.all(16.0),
-
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-
-          children: [
-            TextField(
-              controller: _usernameController,
-              decoration: InputDecoration(
-                labelText: "Kullanıcı Adı",
-                border: OutlineInputBorder(),
-              ),
-              style: textTheme.bodyMedium?.copyWith(
-                color: colorScheme.onSurface,
-              ),
-            ),
-
-            SizedBox(height: 16),
-
-            TextField(
-              controller: _passwordController,
-              obscureText: true,
-              decoration: InputDecoration(
-                labelText: 'Şifre',
-                border: OutlineInputBorder(),
-              ),
-              style: textTheme.bodyMedium?.copyWith(
-                color: colorScheme.onSurface,
-              ),
-            ),
-
-            SizedBox(height: 16),
-
-            Row(
-              children: [
-                Checkbox(
-                  value: _isAdmin,
-                  onChanged: (val) => setState(() => _isAdmin = val ?? false),
-                  activeColor: colorScheme.primary,
-                ),
-                Text(
-                  'Admin olarak giriş yap',
-                  style: textTheme.bodyMedium?.copyWith(
-                    color: colorScheme.primary,
-                  ),
-                ),
-              ],
-            ),
-
-            SizedBox(height: 24),
-
-            ElevatedButton.icon(
-              onPressed: () => Navigator.of(context).push(
-                MaterialPageRoute(builder: (context) => WelcomeScreen(isAdmin: _isAdmin,)),
-              ),
-
-              icon: Icon(
-                Icons.door_sliding_rounded,
-                color: colorScheme.primary,
-              ),
-
-              label: Text(
+              Text(
                 "Giriş yap",
-                style: textTheme.labelLarge?.copyWith(
-                  color: colorScheme.primary,
+                style: textTheme.headlineMedium?.copyWith(
+                  color: colorScheme.onSurface,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
 
-              style: ElevatedButton.styleFrom(
-                backgroundColor: colorScheme.primaryContainer,
-              ),
-            ),
+              SizedBox(height: 50,),
 
-          ],
+              LoginField(
+                hintText: "Kullanıcı adı",
+                isPasswordField: false,
+              ),
+
+              SizedBox(height: 15,),
+
+              LoginField(
+                hintText: "Şifre",
+                isPasswordField: true,
+              ),
+
+              SizedBox(height: 20,),
+
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Checkbox(
+                    value: _isAdmin,
+                    onChanged: (val) => setState(() => _isAdmin = val ?? false),
+                    activeColor: colorScheme.primary,
+                  ),
+                  Text(
+                    'Admin olarak giriş yap',
+                    style: textTheme.bodyMedium?.copyWith(
+                      color: colorScheme.onSurface,
+                    ),
+                  ),
+                ],
+              ),
+
+              SizedBox(height: 20,),
+
+              GradientButton(onPressed: () => Navigator.of(context).push(
+                MaterialPageRoute(builder: (context) => WelcomeScreen(isAdmin: _isAdmin,)),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
