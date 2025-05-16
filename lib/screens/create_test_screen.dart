@@ -49,6 +49,10 @@ class _CreateTestScreenState extends State<CreateTestScreen> {
   }
 
   void _saveTest() {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final textTheme = theme.textTheme;
+
     if (_titleController.text.isNotEmpty && _questions.isNotEmpty) {
       final newTest = MedicalTest(
         id: DateTime.now().millisecondsSinceEpoch.toString(),
@@ -60,6 +64,19 @@ class _CreateTestScreenState extends State<CreateTestScreen> {
 
       widget.onTestCreated(newTest);
       Navigator.of(context).pop();
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            'Lütfen soru başlığını ve soruları giriniz.',
+            style: textTheme.bodySmall?.copyWith(
+              color: colorScheme.error,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          backgroundColor: colorScheme.errorContainer,
+        ),
+      );
     }
   }
 
@@ -82,10 +99,21 @@ class _CreateTestScreenState extends State<CreateTestScreen> {
     showDialog(
       context: context,
       builder: (ctx) {
+        final theme = Theme.of(context);
+        final colorScheme = theme.colorScheme;
+        final textTheme = theme.textTheme;
+        
         return StatefulBuilder(
           builder: (ctx, setDialogState) { // Renamed setState to setDialogState for clarity
             return AlertDialog(
-              title: Text(editQuestionIndex == null ? 'Yeni Soru Ekle' : 'Soruyu Düzenle'),
+              title: Text(
+                editQuestionIndex == null ? 'Yeni Soru Ekle' : 'Soruyu Düzenle',
+
+                style: textTheme.headlineMedium?.copyWith(
+                  color: colorScheme.onSurface,
+                ),
+              ),
+
               content: SingleChildScrollView(
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
@@ -93,53 +121,71 @@ class _CreateTestScreenState extends State<CreateTestScreen> {
 
                     TextField(
                       controller: questionController,
-                      decoration: const InputDecoration(
+                      decoration: InputDecoration(
                         labelText: 'Soru Metni',
                         border: OutlineInputBorder(),
                         filled: true,
                       ),
+                      style: textTheme.bodyMedium?.copyWith(
+                        color: colorScheme.onSurface,
+                      ),
                       maxLines: 2,
                     ),
 
-                    const SizedBox(height: 16),
+                    SizedBox(height: 16),
 
-                    const Text('Cevap Seçenekleri', style: TextStyle(fontWeight: FontWeight.bold)),
+                    Text(
+                      'Cevap Seçenekleri', 
+                      style: textTheme.bodyMedium?.copyWith(
+                        color: colorScheme.primary,
+                      ),
+                    ),
 
-                    const SizedBox(height: 8),
+                    SizedBox(height: 8),
 
                     ...List.generate(optionControllers.length, (i) {
                       return Padding(
-                        padding: const EdgeInsets.only(bottom: 8.0),
+                        padding: EdgeInsets.only(bottom: 8.0),
                         child: Row(
                           children: [
                             CircleAvatar(
                               radius: 12,
-                              backgroundColor: Color.fromRGBO(80,100,130,1),
+
+                              backgroundColor: colorScheme.primary,
+
                               child: Text(
                                 '${i + 1}', 
-                                style: const TextStyle(
-                                  color: Colors.white, 
-                                  fontSize: 12, 
+                                style: textTheme.bodyMedium?.copyWith(
+                                  color: colorScheme.onPrimary, 
                                   fontWeight: FontWeight.bold)
                                 ),
                             ),
 
-                            const SizedBox(width: 8),
+                            SizedBox(width: 8),
 
                             Expanded(
                               child: TextField(
                                 controller: optionControllers[i],
+
                                 decoration: InputDecoration(
                                   hintText: 'Seçenek ${i + 1}',
-                                  border: const OutlineInputBorder(),
+                                  border: OutlineInputBorder(),
                                   suffixIcon: i > 1
                                       ? IconButton(
-                                          icon: const Icon(Icons.delete, color: Colors.red),
+                                          icon: Icon(
+                                            Icons.delete, 
+                                            color: colorScheme.error,
+                                            size: 20,
+                                          ),
+
                                           onPressed: () {
                                             setDialogState(() => optionControllers.removeAt(i));
                                           },
                                         )
                                       : null,
+                                ),
+                                style: textTheme.bodyMedium?.copyWith(
+                                  color: colorScheme.onSurface,
                                 ),
                               ),
                             ),
@@ -152,15 +198,39 @@ class _CreateTestScreenState extends State<CreateTestScreen> {
                       onPressed: () {
                         setDialogState(() => optionControllers.add(TextEditingController()));
                       },
-                      icon: const Icon(Icons.add_circle_outline, color: Colors.white,),
-                      label: const Text('Seçenek Ekle', style: TextStyle(color: Colors.white),),
-                      style: ElevatedButton.styleFrom(backgroundColor: Color.fromRGBO(80,100,130,1)),
+
+                      icon: Icon(
+                        Icons.add, 
+                        color: colorScheme.primary,
+                      ),
+
+                      label: Text(
+                        'Seçenek Ekle', 
+                        style: textTheme.labelLarge?.copyWith(
+                          color: colorScheme.primary,
+                        ),
+                      ),
+
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: colorScheme.primaryContainer,
+                      ),
                     ),
                   ],
                 ),
               ),
+
               actions: [
-                TextButton(onPressed: () => Navigator.of(ctx).pop(), child: const Text('İptal')),
+                TextButton(
+                  onPressed: () => Navigator.of(ctx).pop(), 
+                  child: Text(
+                    'İptal',
+                    style: textTheme.labelLarge?.copyWith(
+                      color: colorScheme.error,
+                    ),
+                  )
+                ),
+
+
                 ElevatedButton(
                   onPressed: () {
                     final opts = optionControllers.map((c) => c.text).where((t) => t.trim().isNotEmpty).toList();
@@ -177,11 +247,30 @@ class _CreateTestScreenState extends State<CreateTestScreen> {
                       Navigator.of(ctx).pop();
                     } else {
                       ScaffoldMessenger.of(ctx).showSnackBar(
-                        const SnackBar(content: Text('Lütfen soru metni ve en az 2 seçenek giriniz.'), backgroundColor: Colors.red),
+                        SnackBar(
+                          content: Text(
+                            'Lütfen soru metni ve en az 2 seçenek giriniz.',
+                            style: textTheme.bodySmall?.copyWith(
+                              color: colorScheme.error,
+                            ),
+                          ), 
+                          backgroundColor: colorScheme.errorContainer,
+                        ),
                       );
                     }
                   },
-                  child: Text(editQuestionIndex == null ? 'Ekle' : 'Güncelle'),
+
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: colorScheme.primaryContainer.withValues(alpha: 0.7),
+                  ),
+
+                  child: Text(
+                    editQuestionIndex == null ? 'Ekle' : 'Güncelle',
+
+                    style: textTheme.labelLarge?.copyWith(
+                      color: colorScheme.primary,
+                    ),
+                  ),
                 ),
               ],
             );
@@ -193,16 +282,26 @@ class _CreateTestScreenState extends State<CreateTestScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final textTheme = theme.textTheme;
+
     return Scaffold(
       appBar: AppBar(
         title: Text(
           widget.existingTest == null ? "Test oluştur" : "Testi düzenle",
-        ), 
+
+          style: textTheme.headlineSmall?.copyWith(
+            color: colorScheme.onSurface,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
         centerTitle: true
       ),
 
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: EdgeInsets.all(16.0),
+
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -210,10 +309,13 @@ class _CreateTestScreenState extends State<CreateTestScreen> {
               decoration: const InputDecoration(
                 labelText: 'Test Başlığı',
                 border: OutlineInputBorder()
-              )
+              ),
+              style: textTheme.bodyMedium?.copyWith(
+                color: colorScheme.onSurface,
+              ),
             ),
 
-            const SizedBox(height: 16),
+            SizedBox(height: 16),
 
             TextField(
               controller: _descriptionController,
@@ -221,49 +323,87 @@ class _CreateTestScreenState extends State<CreateTestScreen> {
                 labelText: 'Test Açıklaması', 
                 border: OutlineInputBorder()
               ),
+              style: textTheme.bodyMedium?.copyWith(
+                color: colorScheme.onSurface,
+              ),
               maxLines: 2,
             ),
 
-            const SizedBox(height: 24),
+            SizedBox(height: 24),
 
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Text('Sorular', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                Text(
+                  'Sorular', 
+                  style: textTheme.bodyLarge?.copyWith(
+                    color: colorScheme.onSurface,
+                  ),
+                ),
 
-                const SizedBox(width: 8),
+                SizedBox(width: 8),
 
                 ElevatedButton.icon(
                   onPressed: () => _showQuestionDialog(),
-                  icon: const Icon(Icons.add, color: Colors.white,), 
-                  label: const Text('Soru Ekle', style: TextStyle(color: Colors.white),),
-                  style: ElevatedButton.styleFrom(backgroundColor: Color.fromRGBO(80,100,130,1)),
+
+                  icon: Icon(
+                    Icons.add, 
+                    color: colorScheme.primary,
+                  ),
+
+                  label: Text(
+                    'Soru Ekle', 
+                    style: textTheme.labelLarge?.copyWith(
+                      color: colorScheme.primary,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: colorScheme.primaryContainer,
+                  ),
                 ),
               ],
             ),
 
-            const SizedBox(height: 8),
+            SizedBox(height: 8),
 
             Expanded(
-              child: _questions.isEmpty ? const Center(child: Text('Henüz soru eklenmedi. Soru eklemek için yukarıdaki butona tıklayın.')) : 
-                ListView.builder(
+              child: _questions.isEmpty
+                ? Center(
+                  child: Text(
+                    'Soru yok. Soru eklemek için yukarıdaki butona tıklayın.',
+                    style: textTheme.bodyMedium?.copyWith(
+                      color: colorScheme.primary,
+                    ),
+                  )
+                )
+
+                : ListView.builder(
                   itemCount: _questions.length,
                   itemBuilder: (_, i) {
                     final q = _questions[i];
 
                     return Card(
-                      margin: const EdgeInsets.only(bottom: 12),
+                      margin: EdgeInsets.only(bottom: 12),
+                      color: colorScheme.primaryContainer.withValues(alpha: .5),
 
                       child: ListTile(
                         title: Text(
                           'Soru ${i + 1}: ${q.question}',
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: Color.fromRGBO(80,100,130,1),
+                          style: textTheme.bodyMedium?.copyWith(
+                            color: colorScheme.primary,
+                            fontWeight: FontWeight.bold
                           ),
                         ),
 
-                        subtitle: Text('${q.options.length} seçenek'),
+                        subtitle: Text(
+                          '${q.options.length} seçenek',
+                          style: textTheme.bodySmall?.copyWith(
+                            color: colorScheme.primary.withValues(alpha: 0.7),
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
 
                         trailing: Row(
                           mainAxisSize: MainAxisSize.min, 
@@ -271,17 +411,21 @@ class _CreateTestScreenState extends State<CreateTestScreen> {
                           
                           children: [
                             IconButton(
-                              icon: const Icon(
+                              icon: Icon(
                                 Icons.edit,
-                                color: Colors.blue
-                              ), onPressed: () => _editQuestion(i,)
+                                color: colorScheme.primary,
+                              ), 
+                              
+                              onPressed: () => _editQuestion(i,)
                             ),
 
                             IconButton(
-                              icon: const Icon(
+                              icon: Icon(
                                 Icons.delete,
-                                color: Colors.red
-                              ), onPressed: () => _deleteQuestion(i)
+                                color: colorScheme.error
+                              ), 
+                              
+                              onPressed: () => _deleteQuestion(i)
                             ),
                           ]
                         ),
@@ -295,9 +439,17 @@ class _CreateTestScreenState extends State<CreateTestScreen> {
               width: double.infinity,
               height: 50,
               child: ElevatedButton(
-                onPressed: _saveTest, 
+                onPressed: _saveTest,
+
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: colorScheme.onPrimaryContainer.withValues(alpha: 0.8)
+                ),
+                
                 child: Text(
                   widget.existingTest == null ? "Testi kaydet" : "Testi güncelle",
+                  style: textTheme.labelLarge?.copyWith(
+                    color: colorScheme.onPrimary
+                  ),
                 ),
               ),
             )

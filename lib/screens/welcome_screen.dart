@@ -39,17 +39,20 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final textTheme = theme.textTheme;
+
     final themeNotifier = Provider.of<ThemeNotifier>(context);
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
+        title: Text(
           'Testler',
-            style: TextStyle(
-            color: Color.fromRGBO(80,100,130,1),
-            fontWeight: FontWeight.bold,
-            fontSize: 30,
-          ),
+            style: textTheme.headlineSmall?.copyWith(
+              color: colorScheme.onSurface,
+              fontWeight: FontWeight.bold,
+            ),
         ),
         centerTitle: true,
 
@@ -82,8 +85,8 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
               children: [
                 Text(
                   widget.isAdmin ? 'Hoş Geldiniz, Admin' : 'Hoş Geldiniz',
-                  style: const TextStyle(
-                    fontSize: 20,
+                  style: textTheme.bodyLarge?.copyWith(
+                    color: colorScheme.onSurface,
                     fontWeight: FontWeight.bold
                   ),
                 ),
@@ -97,35 +100,42 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                         ),
                       );
                     },
-                    icon: const Icon(
+
+                    icon: Icon(
                       Icons.add,
-                      color: Colors.white,
+                      color: colorScheme.primary,
                     ),
-                    label: const Text('Yeni Test Oluştur'),
+
+                    label: Text(
+                      'Yeni Test Oluştur',
+                      style: textTheme.labelLarge?.copyWith(
+                        color: colorScheme.primary,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+
                     style: ElevatedButton.styleFrom(
-                      foregroundColor: Colors.white,
-                      backgroundColor: Color.fromRGBO(80,100,130,1),
+                      backgroundColor: colorScheme.primaryContainer
                     ),
                   ),
               ],
             ),
 
-            const SizedBox(height: 16),
-
-            const Text(
-              'Mevcut Testler', 
-              style: TextStyle(
-                fontSize: 16, 
-                fontWeight: FontWeight.bold
-              )
-            ),
-
-            const SizedBox(height: 8),
+            SizedBox(height: 16),
 
             Expanded(
-              child: tests.isEmpty ? const Center(child: Text('Henüz test yok.')) :
+              child: tests.isEmpty 
+              ? Center(
+                child: Text(
+                  'Test yok. Test eklemek için yukarıdaki butona tıklayın.',
+                  style: textTheme.bodyMedium?.copyWith(
+                    color: colorScheme.primary,
+                  ),
+                  textAlign: TextAlign.center,
+                )
+              )
               
-                ListView.builder(
+              : ListView.builder(
                   itemCount: tests.length,
                   itemBuilder: (context, index) {
                     final test = tests[index];

@@ -15,14 +15,17 @@ class _AuthScreenState extends State<AuthScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final textTheme = theme.textTheme;
+
     return Scaffold(
       appBar: AppBar( 
-        title: const Text(
+        title: Text(
           'Test Uygulaması',
-          style: TextStyle(
-            color: Color.fromRGBO(80,100,130,1),
+          style: textTheme.headlineSmall?.copyWith(
+            color: colorScheme.onSurface,
             fontWeight: FontWeight.bold,
-            fontSize: 30,
           ),
         ), 
         centerTitle: true
@@ -37,50 +40,68 @@ class _AuthScreenState extends State<AuthScreen> {
           children: [
             TextField(
               controller: _usernameController,
-              decoration: const InputDecoration(
-                labelText: 'Kullanıcı Adı',
+              decoration: InputDecoration(
+                labelText: "Kullanıcı Adı",
                 border: OutlineInputBorder(),
+              ),
+              style: textTheme.bodyMedium?.copyWith(
+                color: colorScheme.onSurface,
               ),
             ),
 
-            const SizedBox(height: 16),
+            SizedBox(height: 16),
 
             TextField(
               controller: _passwordController,
               obscureText: true,
-              decoration: const InputDecoration(
+              decoration: InputDecoration(
                 labelText: 'Şifre',
                 border: OutlineInputBorder(),
-              )
+              ),
+              style: textTheme.bodyMedium?.copyWith(
+                color: colorScheme.onSurface,
+              ),
             ),
 
-            const SizedBox(height: 16),
+            SizedBox(height: 16),
 
             Row(
               children: [
                 Checkbox(
                   value: _isAdmin,
                   onChanged: (val) => setState(() => _isAdmin = val ?? false),
-                  activeColor: Color.fromRGBO(80,100,130,1),
+                  activeColor: colorScheme.primary,
                 ),
-                const Text('Admin olarak giriş yap'),
+                Text(
+                  'Admin olarak giriş yap',
+                  style: textTheme.bodyMedium?.copyWith(
+                    color: colorScheme.primary,
+                  ),
+                ),
               ],
             ),
 
-            const SizedBox(height: 24),
+            SizedBox(height: 24),
 
             ElevatedButton.icon(
               onPressed: () => Navigator.of(context).push(
                 MaterialPageRoute(builder: (context) => WelcomeScreen(isAdmin: _isAdmin,)),
               ),
-              icon: const Icon(
+
+              icon: Icon(
                 Icons.door_sliding_rounded,
-                color: Colors.white,
+                color: colorScheme.primary,
               ),
-              label: const Text("Giriş yap"),
+
+              label: Text(
+                "Giriş yap",
+                style: textTheme.labelLarge?.copyWith(
+                  color: colorScheme.primary,
+                ),
+              ),
+
               style: ElevatedButton.styleFrom(
-                foregroundColor: Colors.white,
-                backgroundColor: Color.fromRGBO(80,100,130,1),
+                backgroundColor: colorScheme.primaryContainer,
               ),
             ),
 

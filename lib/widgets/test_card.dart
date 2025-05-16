@@ -19,61 +19,100 @@ class TestCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final textTheme = theme.textTheme;
+
     return Card(
-      margin: const EdgeInsets.only(bottom: 16),
+      margin: EdgeInsets.only(bottom: 16),
+
       elevation: 3,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12)
+      ),
+
       child: Column(
         children: [
           Container(
             width: double.infinity,
-            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
-            decoration: const BoxDecoration(
-              color: Color.fromRGBO(80,100,130,1),
+
+            padding: EdgeInsets.symmetric(vertical: 10, horizontal: 16),
+
+            decoration: BoxDecoration(
+              color: colorScheme.primary,
+
               borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(12),
                 topRight: Radius.circular(12),
               ),
             ),
+
             child: Text(
               test.title,
-              style: const TextStyle(
+
+              style: textTheme.titleMedium?.copyWith(
                 fontWeight: FontWeight.bold,
-                fontSize: 18,
-                color: Colors.white,
+                color: colorScheme.onPrimary,
               ),
             ),
           ),
+
           Padding(
-            padding: const EdgeInsets.all(16),
+            padding: EdgeInsets.all(16),
+
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
+
               children: [
-                Text(test.description, style: const TextStyle(fontSize: 16)),
-                const SizedBox(height: 16),
+                Text(
+                  test.description, 
+                  style: textTheme.bodyMedium?.copyWith(
+                    color: colorScheme.onSurface,
+                  ),
+                ),
+
+                SizedBox(height: 16),
+
                 Row(
                   children: [
-                    const Icon(Icons.calendar_today, size: 16, color: Color.fromRGBO(80,100,130,1)),
-                    const SizedBox(width: 6),
+                    Icon(
+                      Icons.calendar_today, 
+                      size: 16, 
+                      color: colorScheme.onSecondaryContainer,
+                    ),
+
+                    SizedBox(width: 6),
+
                     Text(
                       'Oluşturulma: ${test.createdAt.day}/${test.createdAt.month}/${test.createdAt.year}',
-                      style: TextStyle(fontSize: 13, color: Colors.grey[700]),
+
+                      style: textTheme.bodySmall?.copyWith(
+                        color: colorScheme.onSurface.withValues(alpha: 0.7),
+                      ),
                     ),
-                    const SizedBox(width: 16),
-                    const Icon(Icons.question_answer, size: 16, color: Color.fromRGBO(80,100,130,1)),
-                    const SizedBox(width: 6),
+
+                    SizedBox(width: 16),
+
+                    Icon(
+                      Icons.question_answer, 
+                      size: 16,
+                      color: colorScheme.onSecondaryContainer,
+                    ),
+
+                    SizedBox(width: 6),
+
                     Text(
                       '${test.questions.length} Soru',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w500,
-                        fontSize: 13,
-                        color: Colors.grey[700],
+
+                      style: textTheme.bodySmall?.copyWith(
+                        color: colorScheme.onSurface.withValues(alpha: 0.7),
                       ),
                     ),
                   ],
                 ),
 
-                const SizedBox(height: 16),
+                SizedBox(height: 16),
 
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -81,27 +120,66 @@ class TestCard extends StatelessWidget {
                   children: [
                     ElevatedButton.icon(
                       onPressed: onSolve,
-                      icon: const Icon(Icons.play_arrow),
-                      label: const Text('Çöz', style: TextStyle(color: Color.fromRGBO(80,100,130,1), fontWeight: FontWeight.bold),),
+
+                      icon: Icon(
+                        Icons.play_arrow,
+                        color: colorScheme.primary,
+                      ),
+
+                      label: Text(
+                        'Çöz',
+                        style: textTheme.labelLarge?.copyWith(
+                          fontWeight: FontWeight.bold,
+                          color: colorScheme.primary,
+                        ),
+                      ),
+
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: colorScheme.primaryContainer,
+                      ),
                     ),
 
                     if (isAdmin && onUpdate != null)
                       ElevatedButton.icon(
                         onPressed: onUpdate,
-                        icon: const Icon(Icons.edit, color: Colors.white,),
-                        label: const Text('Düzenle', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),),
+
+                        icon: Icon(
+                          Icons.edit, 
+                          color: colorScheme.tertiary,
+                        ),
+
+                        label: Text(
+                          'Düzenle', 
+                          style: textTheme.labelLarge?.copyWith(
+                            fontWeight: FontWeight.bold,
+                            color: colorScheme.tertiary,
+                          ),
+                        ),
+
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.blue[800],
+                          backgroundColor: colorScheme.tertiaryContainer,
                         ),
                       ),
 
                     if (isAdmin && onDelete != null)
                       ElevatedButton.icon(
                         onPressed: onDelete,
-                        icon: const Icon(Icons.delete, color: Colors.white,),
-                        label: const Text('Sil', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),),
+
+                        icon: Icon(
+                          Icons.delete, 
+                          color: colorScheme.error,
+                        ),
+
+                        label: Text(
+                          'Sil', 
+                          style: textTheme.labelLarge?.copyWith(
+                            fontWeight: FontWeight.bold,
+                            color: colorScheme.error,
+                          ),
+                        ),
+
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.red[800],
+                          backgroundColor: colorScheme.errorContainer,
                         ),
                       ),
 

@@ -31,25 +31,7 @@ class MedicalTestApp extends StatelessWidget {
           brightness: themeNotifier.brightness,
         ),
 
-        textTheme: TextTheme(
-          titleLarge: GoogleFonts.roboto(
-            fontSize: 30,
-            fontWeight: FontWeight.bold,
-          ),
-
-          bodyMedium: GoogleFonts.openSans(),
-          bodyLarge: GoogleFonts.merriweatherSans(),
-          bodySmall: GoogleFonts.merriweatherSans(),
-
-          displayLarge: GoogleFonts.merriweatherSans(),
-          displayMedium: GoogleFonts.merriweatherSans(),
-          displaySmall: GoogleFonts.merriweatherSans(),
-          
-          labelLarge: GoogleFonts.openSans(
-            fontWeight: FontWeight.bold,
-            fontSize: 12,
-          ),
-        ),
+        textTheme: GoogleFonts.robotoTextTheme()
       ),
       home: AuthScreen(),
     );

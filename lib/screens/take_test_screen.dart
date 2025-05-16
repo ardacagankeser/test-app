@@ -40,46 +40,113 @@ class _TakeTestScreenState extends State<TakeTestScreen> {
 
   Widget _buildQuestionView() {
     final q = _questions[_currentQuestionIndex];
+
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final textTheme = theme.textTheme;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
+
       children: [
-        Text('Soru ${_currentQuestionIndex + 1}/${_questions.length}', style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-        const SizedBox(height: 8),
-        Card(elevation: 2, child: Padding(padding: const EdgeInsets.all(16), child: Text(q.question, style: const TextStyle(fontSize: 18)))),
-        const SizedBox(height: 16),
-        const Text('Cevap Seçenekleri:', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+        Text(
+          'Soru ${_currentQuestionIndex + 1}/${_questions.length}', 
+          style: textTheme.bodyMedium?.copyWith(
+            color: colorScheme.onSurface,
+            fontWeight: FontWeight.bold
+          ),
+        ),
+
+        SizedBox(height: 8),
+
+        Card(
+          elevation: 2, 
+          color: colorScheme.primaryContainer,
+
+          child: Padding(
+            padding: EdgeInsets.all(16),
+            
+            child: Text(
+              q.question, 
+              style: textTheme.bodyLarge?.copyWith(
+                color: colorScheme.primary,
+                fontWeight: FontWeight.bold,
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ),
+        ),
+
+        SizedBox(height: 16),
+
+        Text(
+          'Cevap Seçenekleri:', 
+          style: textTheme.bodyMedium?.copyWith(
+            color: colorScheme.onSurface,
+            fontWeight: FontWeight.bold
+          ),
+        ),
+
         Expanded(
           child: ListView.builder(
             itemCount: q.options.length,
             itemBuilder: (_, i) => RadioListTile<int>(
-              title: Text(q.options[i]),
+              title: Text(
+                q.options[i],
+
+                style: textTheme.bodyMedium?.copyWith(
+                  color: colorScheme.onSurface,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
               value: i,
               groupValue: q.selectedAnswer,
               onChanged: (val) => setState(() => q.selectedAnswer = val),
+              selectedTileColor: colorScheme.primary,
+              splashRadius: 16,
             ),
           ),
         ),
+
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             if (_currentQuestionIndex > 0) ElevatedButton(
-              onPressed: _goToPreviousQuestion, 
-              child: const Text(
+              onPressed: _goToPreviousQuestion,
+
+              style: ElevatedButton.styleFrom(
+                backgroundColor: colorScheme.secondaryContainer,
+              ),
+
+              child: Text(
                 'Önceki Soru', 
-                style: TextStyle(
-                  color: Color.fromRGBO(80,100,130,1), 
+                style: textTheme.labelLarge?.copyWith(
+                  color: colorScheme.primary,
                   fontWeight: FontWeight.bold
-                )
-              )
-            ) else const SizedBox(),
+                ),
+              ),
+            ) else SizedBox(),
 
             ElevatedButton(
-              onPressed: q.selectedAnswer != null ? _goToNextQuestion : null,
+              onPressed: q.selectedAnswer != null 
+                ? _goToNextQuestion 
+                : null,
+
               style: ElevatedButton.styleFrom(
-                backgroundColor: _currentQuestionIndex == _questions.length - 1 ? Colors.green : null),
-              child: Text(_currentQuestionIndex == _questions.length - 1 ? 'Testi Tamamla' : 'Sonraki Soru',
+                backgroundColor: _currentQuestionIndex == _questions.length - 1 
+                  ? colorScheme.tertiaryContainer 
+                  : colorScheme.secondaryContainer,
+              ),
+
+              child: Text(
+                _currentQuestionIndex == _questions.length - 1 
+                  ? 'Testi Tamamla' 
+                  : 'Sonraki Soru',
+
                 style: TextStyle(
-                  color: _currentQuestionIndex == _questions.length - 1 ? Colors.white : Color.fromRGBO(80,100,130,1), 
+                  color: _currentQuestionIndex == _questions.length - 1 
+                    ? colorScheme.tertiary 
+                    : colorScheme.primary, 
                   fontWeight: FontWeight.bold
                 ),
               ),
@@ -91,19 +158,59 @@ class _TakeTestScreenState extends State<TakeTestScreen> {
   }
 
   Widget _buildCompletedView() {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final textTheme = theme.textTheme;
+
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.stretch,
+
       children: [
-        const Icon(Icons.check_circle, color: Colors.green, size: 80),
-        const SizedBox(height: 24),
-        const Text('Test Tamamlandı!', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold), textAlign: TextAlign.center),
-        const SizedBox(height: 16),
-        const Text('Tüm soruları yanıtladınız. Test sonuçları kaydedildi.', textAlign: TextAlign.center),
-        const SizedBox(height: 32),
+        Icon(
+          Icons.check_circle_outline_rounded, 
+          color: Colors.green, 
+          size: 80,
+        ),
+
+        SizedBox(height: 24),
+        
+        Text(
+          'Test Tamamlandı!', 
+          style: textTheme.headlineSmall?.copyWith(
+            color: colorScheme.onSurface,
+            fontWeight: FontWeight.bold,
+          ), 
+          textAlign: TextAlign.center
+        ),
+
+        SizedBox(height: 16),
+
+        Text(
+          'Tüm soruları yanıtladınız. Test sonuçları kaydedildi.',
+          style: textTheme.bodyLarge?.copyWith(
+            color: colorScheme.onSurface,
+            fontWeight: FontWeight.bold,
+          ), 
+          textAlign: TextAlign.center
+        ),
+
+        SizedBox(height: 32),
+
         ElevatedButton(
           onPressed: () => Navigator.of(context).pop(), 
-          child: const Text('Ana Ekrana Dön')
+
+          style: ElevatedButton.styleFrom(
+            backgroundColor: colorScheme.primaryContainer,
+          ),
+
+          child: Text(
+            'Ana Ekrana Dön',
+            style: textTheme.labelLarge?.copyWith(
+              color: colorScheme.primary,
+              fontWeight: FontWeight.bold,
+            ),
+          )
         ),
       ],
     );
@@ -111,10 +218,24 @@ class _TakeTestScreenState extends State<TakeTestScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final textTheme = theme.textTheme;
+
     return Scaffold(
-      appBar: AppBar(title: Text(widget.test.title), centerTitle: true),
+      appBar: AppBar(
+        title: Text(
+          widget.test.title,
+          style: textTheme.headlineSmall?.copyWith(
+            color: colorScheme.onSurface,
+            fontWeight: FontWeight.bold,
+          ),
+        ), 
+        centerTitle: true
+      ),
+
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: EdgeInsets.all(16.0),
         child: _testCompleted ? _buildCompletedView() : _buildQuestionView(),
       ),
     );
